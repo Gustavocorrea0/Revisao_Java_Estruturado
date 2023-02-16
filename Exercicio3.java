@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class CalculoDeNotas {
+public class Exercicio3 {
     static Scanner capturaDeDados = new Scanner(System.in);
 
     public static void main(String[] args) {
