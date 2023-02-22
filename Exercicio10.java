@@ -1,105 +1,165 @@
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Exercicio10 {
     public static Scanner capturaDeDados = new Scanner(System.in);
+    static boolean sistemaEstiverLigado = true;
+    private int quantidadeDeVagas;
+    private Map<String, Integer> estacionamento;
 
-    private static int[][] estacionamento;
-    public int vagas;
-    static String placa;
-    static int posicaoDaVaga;
-    public static void main(String[] args) {
-        menu();
+    public Exercicio10(int quantidadeDeVagas) {
+        this.quantidadeDeVagas = quantidadeDeVagas;
+        this.estacionamento = new HashMap<>();
     }
 
-    public static void menu() {
+    public void statusEstacionamento() {
+        String continuar;
+        System.out.println("+-------------------------------------------------+");
+        System.out.println("|             Vagas Ocupadas e Carros             |");
+        System.out.println("+-------------------------------------------------+");
+        System.out.println("|          Vaga          |          Placa         |");
+        for (String placa : estacionamento.keySet()) {
+            System.out.println("|           " + estacionamento.get(placa) + "            |         " + placa + "        |");
+        }
 
-        Exercicio10 estacionamento = new Exercicio10(2);
+        System.out.println("+-------------------------------------------------+");
+        System.out.println("|                  Vagas Livres                   |");
+        System.out.println("+-------------------------------------------------+");
+        if (estacionamento.size() == 9){
+            System.out.println("|              Todas Estão Livres                 |");
+        } else {
+            for (int desocupadas = 0; desocupadas <= quantidadeDeVagas; desocupadas++) {
+                boolean vagaComCarro = false;
+                for (int vaga : estacionamento.values()) {
+                    if (vaga == desocupadas) {
+                        vagaComCarro = true;
+                        break;
+                    }
+                    if (!vagaComCarro) {
+                        System.out.println("|         Vaga: " + desocupadas + "          |         Vazio        |");
+                    }
+                }
+            }
+        }
+        System.out.println("+-------------------------------------------------+");
+        System.out.println("|       Deseja Continuar Ou Voltar ao Menu ?      |");
+        System.out.println("|          (C) Continuar ou (V) Voltar            |");
+        System.out.println("| > ");
+        continuar = capturaDeDados.nextLine();
+        if (continuar.equalsIgnoreCase("C")){
+            statusEstacionamento();
+        }
+    }
 
+    public boolean vagaComVeiculo(int numeroDaVaga) {
+        return estacionamento.containsValue(numeroDaVaga);
+    }
+
+    public void addVeiculoAVaga(String placa, int numeroDaVaga) {
+        estacionamento.put(placa, numeroDaVaga);
+
+        System.out.println("+-------------------------------------------------+");
+        System.out.println("|                 Carro Adicionado                |");
+        System.out.println("| Vaga:               "  +   numeroDaVaga + " | Placa:          " + placa + " |");
+    }
+
+    public void removerCarro(String placa) {
+        int numeroDaVaga = estacionamento.remove(placa);
+        System.out.println("+-------------------------------------------------+");
+        System.out.println("|                  Carro Removido                 |");
+        System.out.println("| Vaga:               "  +   numeroDaVaga + " | Placa:          " + placa + " |");
+    }
+
+
+    public static void main(String[] args) {
+
+        Exercicio10 estacionamento = new Exercicio10(9);
         String opcao;
-        do {
-            System.out.println("+-----------------------------------+");
-            System.out.println("|    Controle do Estacionamento     |");
-            System.out.println("+-----------------------------------+");
-            System.out.println("|       1 - Adicionar Carro         |");
-            System.out.println("|       2 - Liberar Carro           |");
-            System.out.println("|       3 - Verificar Status        |");
-            System.out.println("|       9 - Sair                    |");
+        boolean sair = false;
+
+        while (!sair) {
+            System.out.println("+-------------------------------------------------+");
+            System.out.println("|             Controle do Estacionamento          |");
+            System.out.println("+-------------------------------------------------+");
+            System.out.println("|             1 - Adicionar Carro                 |");
+            System.out.println("|             2 - Liberar Carro                   |");
+            System.out.println("|             3 - Verificar Status                |");
+            System.out.println("|             9 - Sair                            |");
             System.out.println("| > Qual opção desejada: ");
             opcao = capturaDeDados.nextLine();
 
             switch (opcao) {
                 case "1":
-                    System.out.println("+-----------------------------------+");
-                    System.out.println("|          Adicionar Carro          |");
+
+                    System.out.println("+-------------------------------------------------+");
+                    System.out.println("|                 Adicionar Carro                 |");
                     String placa;
                     int posicaoDaVaga;
                     System.out.println("| > Qual a Placa do Veiculo: ");
                     placa = capturaDeDados.nextLine();
                     System.out.println("| > Qual a Vaga desejada: ");
                     posicaoDaVaga = capturaDeDados.nextInt();
-
-                    if (estacionamento.vagaComVeiculo(placa, posicaoDaVaga)){
-                        System.out.println(" Vaga Com Veiculo");
+                    if (estacionamento.vagaComVeiculo(posicaoDaVaga)) {
+                        System.out.println("+-------------------------------------------------+");
+                        System.out.println("|                 Vaga com Carro                  |");
+                        break;
                     } else {
                         estacionamento.addVeiculoAVaga(placa, posicaoDaVaga);
-                        menu();
+                        break;
                     }
-                    break;
-                case "2":
-                    System.out.println("+-----------------------------------+");
-                    System.out.println("|          Liberar Carro            |");
-                    System.out.println("Qual a placa do Veiculo");
-                    placa = capturaDeDados.nextLine();
 
-                    System.out.println("Qual a vaga do Veiculo");
-                    posicaoDaVaga = capturaDeDados.nextInt();
-                    if (!estacionamento.vagaComVeiculo(placa, posicaoDaVaga )){
-                        System.out.println("Não ha carro nesta vaga");
-                    } else {
-                        estacionamento.limparVaga(placa, posicaoDaVaga);
-                    }
+                case "2":
+                        System.out.println("+-------------------------------------------------+");
+                        System.out.println("|                   Liberar Carro                 |");
+                        System.out.println("| > Qual a placa do Carro");
+                        placa = capturaDeDados.nextLine();
+                        System.out.println("| > Qual a Vaga do Carro");
+                        posicaoDaVaga = capturaDeDados.nextInt();
+
+                        if (!estacionamento.estacionamento.containsKey(placa)) {
+                            System.out.println("+-------------------------------------------------+");
+                            System.out.println("|             Veiculo não Encontrado              |");
+                            System.out.println("+-------------------------------------------------+");
+                        } else {
+                            estacionamento.removerCarro(placa);
+                        }
                     break;
                 case "3":
-                    statusEstacionamento();
+                    estacionamento.statusEstacionamento();
                     break;
                 case "9":
-                    break;
-                default:
-                    System.out.println("+-----------------------------------+");
-                    System.out.println("|          OPÇÃO INVÁLIDA           |");
-                    System.out.println("+-----------------------------------+");
+                    sairDoSistema();
                     break;
             }
-        } while (opcao == "9");
-    }
-
-    public Exercicio10(int vagas) {
-        this.vagas = vagas;
-        this.estacionamento = new int[vagas][5];
-    }
-
-    public static void statusEstacionamento() {
-        System.out.println("+-----------------------------------+");
-        System.out.println("|       Placa      |     Posição    |");
-        for (int p = 0; p < estacionamento.length; p++) {
-            for (int v = 0; v < estacionamento[p].length; v++) {
-                System.out.println(estacionamento[p][v] + "");
-            }
-            System.out.println();
         }
     }
 
-    public boolean vagaComVeiculo(String placa, int numeroDaVaga){
-        return estacionamento[Integer.parseInt(placa)][numeroDaVaga] != 0;
-    }
+    private static void sairDoSistema() {
+        boolean desejaContinuarForInvalido;
+        String continuar;
+        do {
+            System.out.println("+-------------------------------------------------+");
+            System.out.println("|      Deseja Continuar? (S) Sim ou (N) Não       |");
+            System.out.println("| > ");
+            continuar = capturaDeDados.next();
+            desejaContinuarForInvalido = !continuar.equalsIgnoreCase("S") && !continuar.equalsIgnoreCase("N");
 
-    public static void addVeiculoAVaga(String placa, int numeroDaVaga){
-        estacionamento[Integer.parseInt(placa)][numeroDaVaga] = 1;
-        System.out.println("Vaga:" + numeroDaVaga + " | Placa: " + placa + " | Possui Veiculo |");
-    }
+            if (desejaContinuarForInvalido) {
+                System.out.println("+-------------------------------------------------+");
+                System.out.println("|                Opção não listada                |");
 
-    public static void limparVaga(String placa, int numeroDaVaga){
-        estacionamento[Integer.parseInt(placa)][numeroDaVaga] = 0;
-        System.out.println("Vaga:" + numeroDaVaga + " | Placa: " + placa + " | Não Possui Veiculo |");
+            } else if (continuar.equalsIgnoreCase("s")) {
+                sistemaEstiverLigado = false;
+                System.out.println("+-------------------------------------------------+");
+                System.out.println("|                     Saindo                      |");
+                System.out.println("+-------------------------------------------------+");
+                System.exit(0);
+
+            } else if (continuar.equalsIgnoreCase("n")) {
+                sistemaEstiverLigado = true;
+            }
+
+        } while (desejaContinuarForInvalido);
     }
 }
