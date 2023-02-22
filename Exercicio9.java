@@ -3,7 +3,7 @@ import java.util.Random;
 public class Exercicio9 {
 
     public static void main(String[] args) {
-        
+
         int[][] imagemUm = new int[10][10];
         Random geradorDeNumeros = new Random();
 
@@ -19,6 +19,5 @@ public class Exercicio9 {
             }
             System.out.println();
         }
-
     }
 }
